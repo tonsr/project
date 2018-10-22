@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+    http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">  
+    
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+	    <property name="basePackage" value="com.demo.dao" />
+	    <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+	</bean>
+	
+	<bean id="dataSourceFactoryBean" class="com.demo.dbconnector.DataSourceFactoryBean">
+		<property name="url" value="commondb.*.jdbc.url"/>
+		<property name="username" value="commondb.*.jdbc.username"/>
+		<property name="password" value="commondb.*.jdbc.password"/>
+		<property name="driverClass" value="commondb.*.jdbc.driver"/>
+		<property name="dataSourceClass" value="com.alibaba.druid.pool.DruidDataSource"/>
+		
+		<property name="props">
+			<map>
+				<entry key="initialSize" value="${commondb.druid.initialSize}"/>
+			</map>
+		</property>
+	</bean>
+	
+	<bean id="dataSource" class="com.demo.dbconnector.datasource.DynamicDataSource">
+		<property name="dataSourceNames" value="${commondb.datasource.names}"/>
+		<property name="dataSourceFactoryBean" ref="dataSourceFactoryBean"/>
+		<property name="defaultDataSource" value="${commondb.datasource.default}"/>
+	</bean>
+
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+	  <property name="dataSource" ref="dataSource"/>
+	  <property name="transactionFactory">
+	    <bean class="org.apache.ibatis.transaction.managed.ManagedTransactionFactory" />
+	  </property>
+      <property name="mapperLocations" value="classpath*:mybatis/mysql/*Mapper.xml"></property>
+	</bean>
+
+    <tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true" order="1"/>
+    
+    <!-- 为业务逻辑层的方法解析@DataSource注解  为当前线程的HandleDataSource注入数据源 -->    
+    <bean id="dataSourceAspect" class="com.demo.dbconnector.DataSourceAspect" />    
+    <aop:config proxy-target-class="true">
+        <aop:aspect id="dataSourceAspect" ref="dataSourceAspect" order="2"> 
+            <aop:pointcut id="tx" expression="execution(* com.demo..*.mapper..*.*(..)) "/>
+            <aop:before pointcut-ref="tx" method="before"/>
+        </aop:aspect>
+    </aop:config>
+</beans>

@@ -1,0 +1,66 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.tonsr</groupId>
+    <artifactId>wxpt-app</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+  </parent>
+  <artifactId>wxpt-service</artifactId>
+  <dependencies>
+  	<dependency>
+      <groupId>com.tonsr</groupId>
+      <artifactId>wxpt-model</artifactId>
+      <version>${project.parent.version}</version>
+  	</dependency>
+  	<dependency>
+      <groupId>com.demo</groupId>
+      <artifactId>comm-db</artifactId>
+      <version>${project.parent.version}</version>
+  	</dependency>
+  	<dependency>
+      <groupId>com.tonsr</groupId>
+      <artifactId>wxpt-config</artifactId>
+      <version>${project.parent.version}</version>
+  	</dependency>
+	<dependency>
+	  <groupId>com.alibaba</groupId>
+	  <artifactId>dubbo</artifactId>
+	  <version>${dubbo.version}</version>
+	  <exclusions>
+	  	<exclusion>
+	  		<artifactId>netty</artifactId>
+	  		<groupId>org.jboss.netty</groupId>
+	  	</exclusion>
+	  </exclusions>
+	</dependency>
+	
+	<dependency>
+	    <groupId>com.github.sgroschupf</groupId>
+	    <artifactId>zkclient</artifactId>
+	    <version>${zkclient.version}</version>
+	</dependency>
+	
+<dependency>
+    <groupId>org.jboss.resteasy</groupId>
+    <artifactId>resteasy-client</artifactId>
+    <version>3.0.19.Final</version>
+</dependency>
+	
+<dependency>
+  <groupId>org.jboss.resteasy</groupId>
+  <artifactId>resteasy-netty</artifactId>
+  <version>3.0.19.Final</version>
+</dependency>
+<dependency>
+    <groupId>org.apache.tomcat</groupId>
+    <artifactId>tomcat-catalina</artifactId>
+    <version>8.5.34</version>
+</dependency>
+<dependency>
+    <groupId>org.mortbay.jetty</groupId>
+    <artifactId>jetty</artifactId>
+    <version>6.1.26</version>
+</dependency>
+
+  </dependencies>
+</project>
